@@ -21,7 +21,8 @@ const api = createApi({
   accessKey: accessKey as string,
 });
 
-const PhotoComp: React.FC<{ photo: Photo }> = ({ photo }) => {
+// FIX: Type any
+const PhotoComp = ({ photo }: any) => {
   const { user, urls } = photo;
 
   return (
