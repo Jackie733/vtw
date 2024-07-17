@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { Suspense } from "react";
 import Image from "next/image";
 import { createApi } from "unsplash-js";
 
@@ -17,11 +15,9 @@ type Photo = {
   };
 };
 
-const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
+const accessKey = process.env.UNSPLASH_ACCESS_KEY;
 
 const api = createApi({
-  // Don't forget to set your access token here!
-  // See https://unsplash.com/developers
   accessKey: accessKey as string,
 });
 
@@ -48,25 +44,13 @@ const PhotoComp: React.FC<{ photo: Photo }> = ({ photo }) => {
   );
 };
 
-export default function Test() {
-  const [data, setPhotosResponse] = useState(null);
+export default async function Test() {
+  const data = await api.search.getPhotos({
+    query: "cat",
+    orientation: "landscape",
+  });
 
-  useEffect(() => {
-    api.search
-      .getPhotos({ query: "cat", orientation: "landscape" })
-      .then((result) => {
-        console.log(result);
-
-        setPhotosResponse(result);
-      })
-      .catch(() => {
-        console.log("something went wrong!");
-      });
-  }, []);
-
-  if (data === null) {
-    return <div>Loading...</div>;
-  } else if (data.errors) {
+  if (data.errors) {
     return (
       <div>
         <div>{data.errors[0]}</div>
@@ -75,15 +59,17 @@ export default function Test() {
     );
   } else {
     return (
-      <div className="feed">
-        <ul className="columnUl">
-          {data.response.results.map((photo) => (
-            <li key={photo.id} className="li">
-              <PhotoComp photo={photo} />
-            </li>
-          ))}
-        </ul>
-      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <div className="feed">
+          <ul className="columnUl">
+            {data.response.results.map((photo) => (
+              <li key={photo.id} className="li">
+                <PhotoComp photo={photo} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Suspense>
     );
   }
 }
