@@ -47,7 +47,7 @@ const PhotoComp = ({ photo }: any) => {
 
 export default async function Test() {
   const data = await api.search.getPhotos({
-    query: "cat",
+    query: "tokyo",
     orientation: "landscape",
   });
 
