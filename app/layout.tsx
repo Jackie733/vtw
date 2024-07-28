@@ -25,7 +25,7 @@ export default function RootLayout({
       <head />
       <body
         className={cn(
-          "bg-background min-h-screen font-sans antialiased",
+          "min-h-screen bg-background font-sans antialiased",
           fontSans.variable
         )}
       >
@@ -35,8 +35,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          {children}
+          <div className="flex flex-col">
+            <Navbar />
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>
